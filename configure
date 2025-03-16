@@ -45,6 +45,9 @@ wait_for_cassandra() {
     return 1
 }
 
+#update 
+sudo apt-get update
+
 # Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CASSANDRA_DIR="$SCRIPT_DIR/apache-cassandra-5.0.3/bin"
@@ -53,7 +56,6 @@ CASSANDRA_DIR="$SCRIPT_DIR/apache-cassandra-5.0.3/bin"
 echo "Checking for OpenJDK 17..."
 if ! java_version_installed "17"; then
     echo "Installing OpenJDK 17..."
-    sudo apt-get update
     sudo apt-get install -y openjdk-17-jdk
     
     # Set OpenJDK 17 as default
