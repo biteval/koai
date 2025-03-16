@@ -88,7 +88,7 @@ koAiServer.listen(18080);
 
 ## OS Compatibility
 
-This project uses Apache Cassandra 5.0.3, which does not support Windows, so it is currently validated only on Linux systems. If you require Windows compatibility, you may use an alternative Cassandra version at your discretion.
+This project uses Apache Cassandra 5.0.3, which does not support Windows, so it is currently tested only on Linux. If you require Windows compatibility, you may use an alternative Cassandra version at your discretion.
 
 ## Requirements
 
@@ -130,7 +130,7 @@ I provide a default prediction strategy and striking-biased and wrestling-biased
   <img src="https://github.com/biteval/koai/blob/main/diagram/koai-architect.png" alt="KoAI Architecture Diagram">
 </p>
 
-The primary KoAI modules include `/managers`, `/controllers`, `/utils/query_builder`, and `/predicter`.
+The primary KoAI modules include `/managers`, `/controllers`, `/utils/query_builder`, `/scraper`, and `/predicter`.
 
 The following example demonstrates the interaction between these modules:
 
@@ -156,8 +156,8 @@ conf.primaryKey=std::move(primaryKey);
 
 4. The class `UfcDataBaseControllerConf` derived from base `ControllerConfigurer<UfcDataBaseControllerConf>`, which pass itself as a template parameter to the base class `ControllerConfigurer`(CRTP), this allows for creating new `ControllerConfigurer` derived classes for diffrent configuratiuons.
 
- `UfcDataBaseControllerConf` is specifically designed to configure the `DataBaseController` class for the UFC Cassandra database by providing fundamental parameters for query generation. This can be customized to create alternative configurations with different primary key as an example.
-
+ `UfcDataBaseControllerConf` is specifically designed to configure the `DataBaseController` class for the UFC Cassandra database by providing fundamental parameters for query generation. This can be customized to create alternative configurations.
+ 
 5. `/utils/query_builder/cass_query_builder.hpp` defines a class `CassQueryBuilder`.
 
    `UfcDataBaseControllerConf` feeds the `CassQueryBuilder` with the `CassQueryBuilderConf` struct containing essential Cassandra parameters, enabling `CassQueryBuilder` to generate appropriate Cassandra queries, such as:
@@ -198,7 +198,7 @@ conf.primaryKey=std::move(primaryKey);
    }
    ```
 
-8. `/scraper/rufc_scraper.hpp` defines a `UfcScraper` class.
+8. `/scraper/ufc_scraper.hpp` defines a `UfcScraper` class.
 
 9. `/managers/database_manager.hpp` defines a `UfcDatabaseManager` class.
 
