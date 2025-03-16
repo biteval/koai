@@ -76,7 +76,7 @@ void database_ctl::UfcDataBaseControllerConf::configure(auto&dbController){
        database_utils::CassQueryBuilder qbuilder;
        //move the conf struct to the cass query builder obj.
        qbuilder.setConf(std::move(conf));
-    
+       //feeding qbuilder with other basic info required to generate queries
        qbuilder.withTitles().withTablePrimaryKey().setClusteringOrderBy(GENDER_KEY,database_utils::ORDER::ASC).
        setClusteringOrderBy(LAST_NAME_KEY,database_utils::ORDER::ASC).
        setClusteringOrderBy(STATUS_KEY, database_utils::ORDER::ASC).
@@ -84,7 +84,8 @@ void database_ctl::UfcDataBaseControllerConf::configure(auto&dbController){
        setClusteringOrderBy(AGE_KEY, database_utils::ORDER::ASC).
        setClusteringOrderBy(DIVISION_KEY, database_utils::ORDER::ASC).
        setClusteringOrderBy(FIGHTING_STYLE_KEY, database_utils::ORDER::ASC);
-       dbController.conf(std::move(qbuilder));
+       //move the feeded qbuilder to dbController
+       dbController.conf(std::move(qbuilder)); //dbController is a DataBaseController object
 }
 
 #endif //! __KOAI_UFC_DATABASE_CONTROLLER_CONF__ INCLUDED

@@ -22,7 +22,7 @@ namespace data_provider{
     
     template<typename Configurer>
     DataProviderManager &configureDbController(database_ctl::ControllerConfigurer<Configurer>&configurer){
-        configurer.configure(databaseController);
+        configurer.configure(databaseController); //configurer is UfcDataBaseControllerConf object
         return *this;
     }
 
