@@ -1,14 +1,14 @@
-# KoAI
+# KoAi
 
 <p align="center">
   <img src="https://github.com/biteval/koai/blob/main/static/favicon/apple-touch-icon.png" alt="KoAI Logo">
 </p>
 
-KoAI is a platform for predicting UFC fight results between any two UFC fighters.
+KoAi is a platform for predicting UFC fight results between any two UFC fighters.
 
 ## How It Works
 
-KoAI utilizes a flexible failover data provider by combining Cassandra database storage with live web scraping to achieve resilient data provisioning. Initially, we employ a UFC web scraper to replicate the UFC database into a local Cassandra instance and provide an API for fighter data retrieval. The system searches the Cassandra database first, using a primary key structure optimized for efficient queries by first name:
+KoAi utilizes a flexible failover data provider by combining Cassandra database storage with live web scraping to achieve resilient data provisioning. Initially, we employ a UFC web scraper to replicate the UFC database into a local Cassandra instance and provide an API for fighter data retrieval. The system searches the Cassandra database first, using a primary key structure optimized for efficient queries by first name:
 
 ### Primary Key Structure:
 ```
@@ -31,7 +31,7 @@ If a fighter cannot be located in the database, the failover search function aut
 
 ## Installation
 
-The most efficient method to install the KoAI application is by executing the configuration shell script, which installs all dependencies and builds the application:
+The most efficient method to install the KoAi application is by executing the configuration shell script, which installs all dependencies and builds the application:
 
 ```
 chmod +x configure.sh
@@ -102,7 +102,7 @@ This project also incorporates the following third-party libraries:
     * OpenSSL
     * zlib
 
-* Crow server for frontend and API integration with the KoAI application:
+* Crow server for frontend and API integration with the KoAi application:
   https://github.com/CrowCpp/Crow
 
 Required libraries can be installed via:
