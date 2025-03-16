@@ -32,9 +32,12 @@ If a fighter cannot be located in the database, the failover search function aut
 ## Installation
 
 The most efficient method to install the KoAI application is by executing the configuration shell script, which installs all dependencies and builds the application:
+
 ```
 chmod +x configure.sh
+```
 
+```
 ./configure.sh
 ```
 
@@ -42,7 +45,7 @@ chmod +x configure.sh
 
 After executing `./configure.sh`, the script defines default Cassandra credentials with SimpleStrategy and a replication factor of 1, then replicates the UFC database to your local Cassandra instance. You can subsequently modify Cassandra configurations according to your requirements.
 
-Cassandra configuration adjustments can be made in `controllers/ufc_db_ctl_conf.hpp` as demonstrated below.
+Cassandra configuration adjustments can be made in `controllers/ufc_db_ctl_conf.hpp` , continue reading to learn how this can be done.
 
 ### Creating a New Database Example:
 
@@ -85,7 +88,7 @@ koAiServer.listen(18080);
 
 ## OS Compatibility
 
-This project implements Apache Cassandra 5.0.3, which does not support Windows, so it is currently validated only on Linux systems. If you require Windows compatibility, you may implement an alternative Cassandra version at your discretion.
+This project uses Apache Cassandra 5.0.3, which does not support Windows, so it is currently validated only on Linux systems. If you require Windows compatibility, you may use an alternative Cassandra version at your discretion.
 
 ## Requirements
 
@@ -119,7 +122,7 @@ If you elect not to run `./configure.sh`, you must perform all setup steps manua
 
 ## Prediction
 
-We provide a default prediction strategy complemented by striking-biased and wrestling-biased methodologies that leverage UFC data and derived features to predict fight outcomes between selected competitors. We implement the Strategy design pattern for our prediction system, making it extensible for custom algorithms in `predicter/strategies`.
+I provide a default prediction strategy and striking-biased and wrestling-biased strategies that leverage UFC data and derived features to predict fight results between selected athletes. with the Strategy design pattern for our prediction system, making it extensible for custom algorithms in `predicter/strategies`.
 
 ## Architecture
 
@@ -131,7 +134,13 @@ The primary KoAI modules include `/managers`, `/controllers`, `/utils/query_buil
 
 The following example demonstrates the interaction between these modules:
 
-1. `/controllers/ufc_db_ctl_conf.hpp` utilizes `/utils/query_builder/query_builder_conf.hpp` to generate a `CassQueryBuilderConf` object, which encapsulates essential Cassandra parameters such as clusterName, keySpace, etc:
+1.`/controllers/ufc_db_ctl_conf.hpp` defines a class `UfcDataBaseControllerConf`
+
+
+2.`/utils/query_builder/query_builder_conf.hpp` defines a class `CassQueryBuilderConf`
+
+
+3. `UfcDataBaseControllerConf` utilizes `CassQueryBuilderConf` object, which encapsulates essential Cassandra parameters such as clusterName, keySpace, etc:
 
 ```cpp
 std::vector<std::string> primaryKey{FIRST_NAME_KEY, GENDER_KEY, LAST_NAME_KEY, STATUS_KEY, NICKNAME_KEY, AGE_KEY, DIVISION_KEY, FIGHTING_STYLE_KEY, IMAGE_URL_DB_KEY};
@@ -145,13 +154,13 @@ conf.titles=std::move(titles);
 conf.primaryKey=std::move(primaryKey);
 ```
 
-2. `/controllers/ufc_db_ctl_conf.hpp` defines a class `UfcDataBaseControllerConf` derived from base `ControllerConfigurer<UfcDataBaseControllerConf>`, employing the Curiously Recurring Template Pattern (CRTP).
+4. The class `UfcDataBaseControllerConf` derived from base `ControllerConfigurer<UfcDataBaseControllerConf>`, which pass itself as a template parameter to the base class `ControllerConfigurer`(CRTP), this allows for creating new `ControllerConfigurer` derived classes for diffrent configuratiuons.
 
-   `UfcDataBaseControllerConf` is specifically designed to configure the `DataBaseController` class for the UFC Cassandra database by providing fundamental parameters for query generation. This can be customized to create alternative configurations with different primary key structures or other parameters.
+ `UfcDataBaseControllerConf` is specifically designed to configure the `DataBaseController` class for the UFC Cassandra database by providing fundamental parameters for query generation. This can be customized to create alternative configurations with different primary key as an example.
 
-3. `/utils/query_builder/cass_query_builder.hpp` defines a class `CassQueryBuilder`.
+5. `/utils/query_builder/cass_query_builder.hpp` defines a class `CassQueryBuilder`.
 
-   `UfcDataBaseControllerConf` provides the `CassQueryBuilder` with the `CassQueryBuilderConf` struct containing essential Cassandra parameters, enabling `CassQueryBuilder` to generate appropriate Cassandra queries, such as:
+   `UfcDataBaseControllerConf` feeds the `CassQueryBuilder` with the `CassQueryBuilderConf` struct containing essential Cassandra parameters, enabling `CassQueryBuilder` to generate appropriate Cassandra queries, such as:
    ```cpp
    std::string getCreateTableQuery();
    std::string getCreateKeySpaceQuery();
@@ -175,9 +184,9 @@ conf.primaryKey=std::move(primaryKey);
    dbController.conf(std::move(qbuilder)); //dbController is a DataBaseController object
    ```
 
-4. `/controllers/database_controller.hpp` defines the `DataBaseController` class which leverages `CassQueryBuilder` for query generation.
+6. `/controllers/database_controller.hpp` defines the `DataBaseController` class which leverages `CassQueryBuilder` for query generation.
 
-5. `/managers/data_provider_manager.hpp` defines a `DataProviderManager` class which employs `UfcDataBaseControllerConf` to configure the `DataBaseController`:
+7. `/managers/data_provider_manager.hpp` defines a `DataProviderManager` class which employs `UfcDataBaseControllerConf` to configure the `DataBaseController`:
    ```cpp
    private:
    database_ctl::DataBaseController databaseController;
@@ -189,9 +198,9 @@ conf.primaryKey=std::move(primaryKey);
    }
    ```
 
-6. `/scraper/rufc_scraper.hpp` defines a `UfcScraper` class.
+8. `/scraper/rufc_scraper.hpp` defines a `UfcScraper` class.
 
-7. `/managers/database_manager.hpp` defines a `UfcDatabaseManager` class.
+9. `/managers/database_manager.hpp` defines a `UfcDatabaseManager` class.
 
    `DataProviderManager` contains private `UfcScraper` and `UfcDatabaseManager` members, injecting the `DataBaseController` and `UfcScraper` into the `UfcDatabaseManager`. The `UfcDatabaseManager` then utilizes these components to create or update the database:
    ```cpp
