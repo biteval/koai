@@ -50,7 +50,7 @@ echo "Updating package lists..."
 sudo apt-get update
 # Install required dependencies
 echo "Installing required dependencies..."
-sudo apt-get install -y cmake libuv1-dev libssl-dev zlib1g-dev libxml2-dev libcurl4-openssl-dev libasio-dev net-tools 
+sudo apt-get install -y cmake nlohmann-json3-dev libuv1-dev libssl-dev zlib1g-dev libxml2-dev libcurl4-openssl-dev libasio-dev net-tools 
 
 # Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
