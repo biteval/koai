@@ -1,4 +1,4 @@
-# KoAi
+# KoAI
 
 <p align="center">
   <img src="https://github.com/biteval/koai/blob/main/static/favicon/apple-touch-icon.png" alt="KoAI Logo">
