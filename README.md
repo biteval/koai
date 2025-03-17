@@ -103,7 +103,7 @@ koAiServer.listen(18080);
 
 ## OS Compatibility
 
-This project uses Apache Cassandra 5.0.3, which does not support Windows, so it is currently tested only on Linux. If you require Windows compatibility, you may use an alternative Cassandra version at your discretion.
+This project uses Apache Cassandra 5.0.3, which does not support Windows, so it is currently tested only on debian based Linux. If you require Windows compatibility, you may use an alternative Cassandra version at your discretion.
 
 ## Requirements
 
