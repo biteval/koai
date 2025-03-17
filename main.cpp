@@ -5,7 +5,6 @@
 */
 
 int main(){
-   //run this for the first time only to create a new database.
    data_provider::DataProviderManager dataProvider;
    database_ctl::UfcDataBaseControllerConf ufcCtlConfigurer;
    database::Credentials cred;
@@ -22,9 +21,8 @@ int main(){
       setCredentials(std::move(hosts), std::move(cred));
    }
 
-    //create the databse for all ufc athletes
+    //create the databse for all ufc athletes ,call createDatabase for the first time only to create a new database.
     dataProvider.createDatabase();
-   
     //create the databse for ufc athletes with name john only
     //dataProvider.createDatabase("john");
 
@@ -36,7 +34,6 @@ int main(){
    //dataProvider.updateDatabase("john");
 
 
-   //run this for the first time only to create a new database end.
    
    //start the crow server after creating the databse.
    webserver::WebServer koAiServer;

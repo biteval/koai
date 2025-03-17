@@ -50,7 +50,7 @@ echo "Updating package lists..."
 sudo apt-get update
 # Install required dependencies
 echo "Installing required dependencies..."
-sudo apt-get install -y cmake nlohmann-json3-dev libuv1-dev libssl-dev zlib1g-dev libxml2-dev libcurl4-openssl-dev libasio-dev net-tools 
+sudo apt-get install -y cmake nlohmann-json3-dev libuv1-dev libssl-dev zlib1g-dev libxml2-dev libcurl4-openssl-dev libasio-dev net-tools
 
 # Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -104,7 +104,7 @@ if python_311_installed; then
     fi
 else
     # Ask user if they want to install Python 3.11.11
-    read -p "Python 3.11 is not installed. Do you want to install Python 3.11.11 from source? (y/n): " INSTALL_PYTHON
+    read -t 10 -p "Python 3.11 is not installed. Do you want to install Python 3.11.11 from source? (y/n): " INSTALL_PYTHON
     INSTALL_PYTHON_LOWER=$(echo "$INSTALL_PYTHON" | tr '[:upper:]' '[:lower:]')
     
     if [[ "$INSTALL_PYTHON_LOWER" != *"n"* ]]; then  
@@ -243,7 +243,7 @@ make || { echo "Build failed"; exit 1; }
 export CASS_USERNAME="cassandra" && export CASS_PASS="cassandra"
 
 # choose Start koai server
-read -p "Start koAi server? (y/n): " response
+read -t 10 -p "Start koAi server? (y/n): " response
 response_lower=$(echo "$response" | tr '[:upper:]' '[:lower:]')
 
 # Check if the response is NOT "n"

@@ -6,18 +6,18 @@
 #include "screen_cleaner.hpp"
 #include "../controllers/database_ctl_modes.hpp"
 #include "disk/disk_info.hpp"
+#include <thread>
 
 namespace record_processer{
     class RecordProcessor{
-        bool QusAsked;
-        bool createDbOpt;
+       bool dataBasePromptShowed;
        public:
-       RecordProcessor():QusAsked(false), createDbOpt(false){}
+       RecordProcessor():dataBasePromptShowed(false){};
        RecordProcessor(const RecordProcessor&)=delete;
        RecordProcessor&operator=(const RecordProcessor&)=delete;
        RecordProcessor(RecordProcessor&&)noexcept=delete;
        RecordProcessor&operator=(RecordProcessor&&)noexcept=delete;
-       void useSelectChoices(auto&athlete,auto&rec);
+       void showDataBasePrompt(auto&athlete,auto&rec);
        void fillRecord(database_ctl::MODE&mode,auto& athlete,nlohmann::json&record);
        unsigned long forEachRecord(auto&scraperCaller,auto&recordProcessor);
        ~RecordProcessor()=default;
@@ -25,22 +25,22 @@ namespace record_processer{
 }
 
 
-void record_processer::RecordProcessor::useSelectChoices(auto&athlete,auto&rec){  
+void record_processer::RecordProcessor::showDataBasePrompt(auto&athlete,auto&rec){  
     size_t athCounts = athlete.getAthletsCount();
+    //calc the estiamted total database size based on the total records size.
     size_t totalEsSIze = sizeof(rec) * athCounts;
     disk_info::DiskInfo diskInfo;
+    //read available disk size
     size_t avBytes = diskInfo.getAvailableDiskSizeBytes();  
     size_t avBytesMb = diskInfo.bytesToMegabytes(avBytes);
     printf("Available disk space: %zu MBs\n", avBytesMb);
-    printf("Database estimated size: %zu Bytes, create database? (y/n):",totalEsSIze);
-    char res;
-    scanf(" %c",&res);
-    if(res=='y'){
-      createDbOpt=true;
-    }
-    QusAsked=true;
+    printf("Database estimated size: %zu Bytes.\n",totalEsSIze);
+    printf("Database creation will begin in 10 seconds. Press Ctrl+C to cancel.\n");
+    std::this_thread::sleep_for(std::chrono::seconds{10});
+    dataBasePromptShowed=true;
   }
 
+//fill the record with ufc athlete data
 void record_processer::RecordProcessor::fillRecord(database_ctl::MODE&mode, auto&athlete,nlohmann::json&record){
     using namespace database_titles;
     if(mode== database_ctl::MODE::LIVE){
@@ -119,11 +119,9 @@ unsigned long record_processer::RecordProcessor::forEachRecord(auto&scraperCalle
         //athlete.setTargetIndex(i); //select the first athlete in yext payload.
         auto&athlete = scraperCaller.getAthlete();
         fillRecord(currMode,athlete, record);
-        if(currMode == database_ctl::MODE::ADD_NEW && !QusAsked){
-            useSelectChoices(athlete, record);
-        }
-        if(currMode == database_ctl::MODE::ADD_NEW && !createDbOpt){
-            break;
+        //show the database size prompt
+        if(currMode == database_ctl::MODE::ADD_NEW && !dataBasePromptShowed){
+            showDataBasePrompt(athlete, record);
         }
         recordProcessor(std::move(record));
         ++addedRecords;
