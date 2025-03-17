@@ -4,11 +4,11 @@
   <img src="https://github.com/biteval/koai/blob/main/static/favicon/apple-touch-icon.png" alt="KoAI Logo">
 </p>
 
-KoAi is a platform for predicting UFC fight results between any two UFC fighters.
+KoAi is a predictive platform that determines the result of UFC fights between any two athletes in the organization's roster, using comprehensive data analysis to deliver accurate fight predictions.
 
 ## How It Works
 
-KoAi utilizes a flexible failover data provider by combining Cassandra database storage with live web scraping to achieve resilient data provisioning. Initially, we employ a UFC web scraper to replicate the UFC database into a local Cassandra instance and provide an API for fighter data retrieval. The system searches the Cassandra database first, using a primary key structure optimized for efficient queries by first name:
+KoAi utilizes a flexible failover data provider by combining Cassandra database storage with live web scraping to achieve resilient data provisioning. Initially, we employ a UFC web scraper to clone the UFC database into a local Cassandra database and provide an API for fighter data retrieval. The system searches the Cassandra database first, using a primary key structure optimized for efficient queries by firstname:
 
 ### Primary Key Structure:
 ```
@@ -154,7 +154,7 @@ conf.titles=std::move(titles);
 conf.primaryKey=std::move(primaryKey);
 ```
 
-4. The class `UfcDataBaseControllerConf` derived from base `ControllerConfigurer<UfcDataBaseControllerConf>`, which pass itself as a template parameter to the base class `ControllerConfigurer`(CRTP), this allows for creating new `ControllerConfigurer` derived classes for diffrent configuratiuons.
+4. The class `UfcDataBaseControllerConf` derived from base `ControllerConfigurer<UfcDataBaseControllerConf>`, this allows creating new `ControllerConfigurer` derived classes for diffrent configuratiuons.
 
  `UfcDataBaseControllerConf` is specifically designed to configure the `DataBaseController` class for the UFC Cassandra database by providing fundamental parameters for query generation. This can be customized to create alternative configurations.
  
