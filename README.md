@@ -54,6 +54,8 @@ Run the container:
 
 `docker run -d -p 80:18080  -p 443:18080 project-name`
 
+Logs:
+`sudo docker exec -it <container_name> sudo tail -f /var/log/koai-server.log`
 
 ## Basic Usage
 The default start of KoAi app is by creating a new UFC database to achieve failover data providing, so the default start is recommended. See `main.cpp`
