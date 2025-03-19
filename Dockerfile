@@ -1,9 +1,23 @@
 # Use the latest Debian image
 FROM debian:latest
 
-# Install dependencies
+# Install dependencies including wget, tar, and Python 3.11
 RUN apt-get update && apt-get install -y \
-    sudo build-essential rsyslog logrotate cron
+    sudo build-essential wget tar \
+    ca-certificates gnupg software-properties-common \
+    logrotate cron
+
+# Add Python 3.11 repository and install it
+RUN apt-get update && \
+    apt-get install -y lsb-release && \
+    echo "deb http://deb.debian.org/debian $(lsb_release -cs)-backports main" > /etc/apt/sources.list.d/backports.list && \
+    apt-get update && \
+    apt-get install -y python3.11 python3.11-venv python3.11-dev python3-pip
+
+# Set Python 3.11 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 && \
+    update-alternatives --set python3 /usr/bin/python3.11 && \
+    ln -sf /usr/bin/python3 /usr/bin/python
 
 # Set working directory
 WORKDIR /koai
