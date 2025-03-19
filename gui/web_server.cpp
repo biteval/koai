@@ -1,6 +1,28 @@
 #include "web_server.hpp"
 
 webserver::WebServer::WebServer(){
+    /*
+    // Get reference to CORS middleware
+    auto& cors = app.get_middleware<crow::CORSHandler>();
+    
+    // Configure CORS globally with default permissive settings
+    cors.global()
+        .headers("Content-Type", "Authorization")
+        .methods("GET"_method, "POST"_method, "OPTIONS"_method);
+    
+    // Add stricter CORS restrictions for protected routes
+    cors.prefix("/athlete_search")
+        .origin("https://yourdomain.com")  // Restrict to your domain
+        .max_age(3600);                    // Cache preflight requests for 1 hour
+    
+    cors.prefix("/predict")
+        .origin("https://yourdomain.com")
+        .max_age(3600);
+    
+    cors.prefix("/recent_pred")
+        .origin("https://yourdomain.com")
+        .max_age(3600);
+    */
     koaiApp = std::make_unique<koai::KoAi>();
 }
 

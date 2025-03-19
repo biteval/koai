@@ -1,7 +1,7 @@
 # KoAI
 
 <p align="center">
-  <img src="https://github.com/biteval/koai/blob/main/static/favicon/apple-touch-icon.png" alt="KoAI Logo">
+  <img src="https://github.com/biteval/koai/blob/main/static/screen_shot.png" alt="KoAi">
 </p>
 
 KoAi is a predictive platform that determines the result of UFC fights between any two athletes in the organization's roster, using comprehensive data analysis to deliver accurate fight predictions.
@@ -107,6 +107,12 @@ koAiServer.listen(18080);
 
 This project uses Apache Cassandra 5.0.3, which does not support Windows, so it is currently tested only on debian based Linux. If you require Windows compatibility, you may use an alternative Cassandra version at your discretion.
 
+
+## SSL Certificate Configuration
+
+Private Key File: Located at /assets/key.pm
+Certificate File: Located at /assets/c.pm
+
 ## Requirements
 
 This project requires Apache Cassandra 5.0.3, which depends on OpenJDK 17 and Python 3.11. Please ensure these dependencies are installed and configured as your system defaults, or simply execute `./configure.sh` to automatically establish all requirements.
@@ -121,6 +127,12 @@ This project also incorporates the following third-party libraries:
 
 * Crow server for frontend and API integration with the KoAi application:
   https://github.com/CrowCpp/Crow
+  
+  * Dependencies:
+    * asio
+    * openssl
+    * zlib
+        
 
 Required libraries can be installed via:
 ```
@@ -139,7 +151,7 @@ If you elect not to run `./configure.sh`, you must perform all setup steps manua
 
 ## Prediction
 
-I provide a default prediction strategy and striking-biased and wrestling-biased strategies that leverage UFC data and derived features to predict fight results between selected athletes. with the Strategy design pattern for our prediction system, making it extensible for custom algorithms in `predicter/strategies`.
+I provide a default prediction strategy and striking-biased and wrestling-biased strategies that leverage UFC data and derived features to predict fight results between selected athletes. The Strategy design pattern for our prediction system make it extensible for custom algorithms to add in `predicter/strategies`.
 
 ## Architecture
 

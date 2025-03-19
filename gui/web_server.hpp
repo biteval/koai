@@ -8,15 +8,16 @@
 
 
 #include <crow.h>
-#include <nlohmann/json.hpp>
-#include <memory>
+#include "crow/middlewares/cors.h"
 #include "../utils/rate_limiter.hpp"
 #include "../database/database_titles.hpp"
 #include "../app/koai.hpp"
+#include <nlohmann/json.hpp>
+#include <memory>
 
 namespace webserver{
     class WebServer{
-        crow::SimpleApp app;
+        crow::App<crow::CORSHandler>app;
         std::unique_ptr<koai::KoAi>koaiApp;
         rate_limiter::RateLimiter rateLimiter;
         std::mutex mtx;
