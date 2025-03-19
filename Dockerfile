@@ -45,10 +45,9 @@ EOF
 
 RUN echo "0 0 * * * find /var/log/koai-server.log* -mtime +7 -exec rm {} \;" | crontab -
 
-
 # Create a wrapper script to start rsyslog and the app
 RUN echo '#!/bin/bash' > conf_wrapper.sh && \
-    echo 'sudo rsyslogd -n &' >> conf_wrapper.sh && \
+    echo 'rsyslogd -n &' >> conf_wrapper.sh && \
     echo './configure.sh 2>&1 | logger -t koai-server' >> conf_wrapper.sh && \
     chmod +x conf_wrapper.sh
 
