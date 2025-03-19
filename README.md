@@ -110,8 +110,9 @@ This project uses Apache Cassandra 5.0.3, which does not support Windows, so it 
 
 ## SSL Certificate Configuration
 
-Private Key File: Located at /assets/key.pm
-Certificate File: Located at /assets/c.pm
+Private Key File: Located at `/assets/key.pm`
+
+Certificate File: Located at `/assets/c.pm`
 
 ## Requirements
 
