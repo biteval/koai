@@ -1,11 +1,16 @@
 # Use the latest Debian image
 FROM debian:latest
 
-# Install dependencies including wget, tar, and Python 3.11
+# Install dependencies including wget, tar, and OpenJDK 17
 RUN apt-get update && apt-get install -y \
-    sudo build-essential wget tar \
+    sudo build-essential wget tar netstat \
     ca-certificates gnupg software-properties-common \
+    openjdk-17-jdk \
     logrotate cron
+
+# Set Java 17 as default
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH=$PATH:$JAVA_HOME/bin
 
 # Add Python 3.11 repository and install it
 RUN apt-get update && \
