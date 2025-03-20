@@ -1,11 +1,11 @@
-# Start with Ubuntu as the base image
-FROM ubuntu:22.04
+# Start with latest Debian as the base image
+FROM debian:latest
 
 # Avoid prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Set working directory
-WORKDIR /app
+WORKDIR /koai
 
 # Copy the entire project into the container
 COPY . .
@@ -52,19 +52,19 @@ RUN mkdir -p /tmp/python_install \
     && rm -rf /tmp/python_install
 
 # Download and set up Cassandra
-RUN mkdir -p /app/tars \
-    && wget -q -P /app/tars https://dlcdn.apache.org/cassandra/5.0.3/apache-cassandra-5.0.3-bin.tar.gz \
-    && tar -xzf /app/tars/apache-cassandra-5.0.3-bin.tar.gz -C /app \
-    && rm -rf /app/tars
+RUN mkdir -p /koai/tars \
+    && wget -q -P /koai/tars https://dlcdn.apache.org/cassandra/5.0.3/apache-cassandra-5.0.3-bin.tar.gz \
+    && tar -xzf /koai/tars/apache-cassandra-5.0.3-bin.tar.gz -C /koai \
+    && rm -rf /koai/tars
 
 # Set up Cassandra configuration if it exists
-RUN if [ -f "/app/database/conf/cassandra.yaml" ]; then \
-    cp /app/database/conf/cassandra.yaml /app/apache-cassandra-5.0.3/conf/cassandra.yaml; \
+RUN if [ -f "/koai/database/conf/cassandra.yaml" ]; then \
+    cp /koai/database/conf/cassandra.yaml /koai/apache-cassandra-5.0.3/conf/cassandra.yaml; \
     fi
 
 # Create build directory and build the project
-RUN mkdir -p /app/build \
-    && cd /app/build \
+RUN mkdir -p /koai/build \
+    && cd /koai/build \
     && cmake .. \
     && make
 
@@ -74,7 +74,7 @@ ENV CASS_PASS=cassandra
 
 # Define the PORT environment variable with a default value
 # This will be overridden by the cloud platform's assigned port
-ENV PORT=8080
+ENV PORT=18080
 
 # Expose necessary ports
 # Port 9042 for Cassandra
@@ -84,10 +84,10 @@ EXPOSE 9042 ${PORT}
 # Create a startup script that uses the PORT environment variable
 RUN echo '#!/bin/bash\n\
 # Ensure the PORT environment variable is set\n\
-export PORT=${PORT:-8080}\n\
+export PORT=${PORT:-18080}\n\
 echo "Application will listen on port: $PORT"\n\
 \n\
-cd /app/apache-cassandra-5.0.3/bin && ./cassandra -R &\n\
+cd /koai/apache-cassandra-5.0.3/bin && ./cassandra -R &\n\
 echo "Waiting for Cassandra to start..."\n\
 max_attempts=30\n\
 attempt=0\n\
@@ -107,19 +107,16 @@ if [ $attempt -eq $max_attempts ]; then\n\
 fi\n\
 \n\
 # Change cluster name\n\
-cd /app/apache-cassandra-5.0.3/bin\n\
+cd /koai/apache-cassandra-5.0.3/bin\n\
 ./cqlsh -u cassandra -p cassandra -e "UPDATE system.local SET cluster_name = '\''Ufc Cluster'\'' WHERE key='\''local'\';"\n\
 \n\
 # Run nodetool flush\n\
 ./nodetool flush\n\
 \n\
 # Start the KoAi application\n\
-# Pass the PORT environment variable to your application if it accepts it as a command-line parameter\n\
-# If your application uses a configuration file for the port, you may need to modify it here\n\
-cd /app\n\
-# Assuming your application can take a port flag; modify as needed for your specific application\n\
-./koai\n' > /app/startup.sh \
-    && chmod +x /app/startup.sh
+cd /koai\n\
+./koai\n' > /koai/startup.sh \
+    && chmod +x /koai/startup.sh
 
 # Set the entrypoint
-ENTRYPOINT ["/app/startup.sh"]
+ENTRYPOINT ["/koai/startup.sh"]
