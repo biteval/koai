@@ -14,9 +14,8 @@ COPY . .
 RUN apt-get update && apt-get install -y \
     gnupg \
     software-properties-common \
-    curl \
-    && curl -fsSL https://packages.sury.org/python/README.txt | bash -
-
+    curl 
+    
 # Install dependencies and Python 3.11
 RUN apt-get update && apt-get install -y \
     cmake \
@@ -84,42 +83,42 @@ ENV PORT=18080
 # PORT for the KoAi application (will be dynamically assigned by the cloud platform)
 EXPOSE 9042 ${PORT}
 
-# Create a startup script that uses the PORT environment variable
-RUN echo '#!/bin/bash\n\
-# Ensure the PORT environment variable is set\n\
-export PORT=${PORT:-18080}\n\
-echo "Application will listen on port: $PORT"\n\
-\n\
-cd /koai/apache-cassandra-5.0.3/bin && ./cassandra -R &\n\
-echo "Waiting for Cassandra to start..."\n\
-max_attempts=30\n\
-attempt=0\n\
-while [ $attempt -lt $max_attempts ]; do\n\
-    if netstat -an | grep "LISTEN" | grep ":9042" > /dev/null; then\n\
-        echo "Cassandra started successfully."\n\
-        break\n\
-    fi\n\
-    attempt=$((attempt+1))\n\
-    echo "Attempt $attempt of $max_attempts. Still waiting..."\n\
-    sleep 5\n\
-done\n\
-\n\
-if [ $attempt -eq $max_attempts ]; then\n\
-    echo "Cassandra did not start within the expected time frame."\n\
-    exit 1\n\
-fi\n\
-\n\
-# Change cluster name\n\
-cd /koai/apache-cassandra-5.0.3/bin\n\
-./cqlsh -u cassandra -p cassandra -e "UPDATE system.local SET cluster_name = '\''Ufc Cluster'\'' WHERE key='\''local'\';"\n\
-\n\
-# Run nodetool flush\n\
-./nodetool flush\n\
-\n\
-# Start the KoAi application\n\
-cd /koai\n\
-./koai\n' > /koai/startup.sh \
-    && chmod +x /koai/startup.sh
+# Create startup script file
+RUN echo '#!/bin/bash' > /koai/startup.sh && \
+    echo '# Ensure the PORT environment variable is set' >> /koai/startup.sh && \
+    echo 'export PORT=${PORT:-18080}' >> /koai/startup.sh && \
+    echo 'echo "Application will listen on port: $PORT"' >> /koai/startup.sh && \
+    echo '' >> /koai/startup.sh && \
+    echo 'cd /koai/apache-cassandra-5.0.3/bin && ./cassandra -R &' >> /koai/startup.sh && \
+    echo 'echo "Waiting for Cassandra to start..."' >> /koai/startup.sh && \
+    echo 'max_attempts=30' >> /koai/startup.sh && \
+    echo 'attempt=0' >> /koai/startup.sh && \
+    echo 'while [ $attempt -lt $max_attempts ]; do' >> /koai/startup.sh && \
+    echo '    if netstat -an | grep "LISTEN" | grep ":9042" > /dev/null; then' >> /koai/startup.sh && \
+    echo '        echo "Cassandra started successfully."' >> /koai/startup.sh && \
+    echo '        break' >> /koai/startup.sh && \
+    echo '    fi' >> /koai/startup.sh && \
+    echo '    attempt=$((attempt+1))' >> /koai/startup.sh && \
+    echo '    echo "Attempt $attempt of $max_attempts. Still waiting..."' >> /koai/startup.sh && \
+    echo '    sleep 5' >> /koai/startup.sh && \
+    echo 'done' >> /koai/startup.sh && \
+    echo '' >> /koai/startup.sh && \
+    echo 'if [ $attempt -eq $max_attempts ]; then' >> /koai/startup.sh && \
+    echo '    echo "Cassandra did not start within the expected time frame."' >> /koai/startup.sh && \
+    echo '    exit 1' >> /koai/startup.sh && \
+    echo 'fi' >> /koai/startup.sh && \
+    echo '' >> /koai/startup.sh && \
+    echo '# Change cluster name' >> /koai/startup.sh && \
+    echo 'cd /koai/apache-cassandra-5.0.3/bin' >> /koai/startup.sh && \
+    echo './cqlsh -u $CASS_USERNAME -p $CASS_PASS -e "UPDATE system.local SET cluster_name = '\''Ufc Cluster'\'' WHERE key='\''local'\'';"' >> /koai/startup.sh && \
+    echo '' >> /koai/startup.sh && \
+    echo '# Run nodetool flush' >> /koai/startup.sh && \
+    echo './nodetool flush' >> /koai/startup.sh && \
+    echo '' >> /koai/startup.sh && \
+    echo '# Start the KoAi application' >> /koai/startup.sh && \
+    echo 'cd /koai' >> /koai/startup.sh && \
+    echo './koai' >> /koai/startup.sh && \
+    chmod +x /koai/startup.sh
 
 # Set the entrypoint
 ENTRYPOINT ["/koai/startup.sh"]
