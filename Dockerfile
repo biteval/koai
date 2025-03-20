@@ -61,16 +61,29 @@ RUN echo '#!/bin/bash' > start_app.sh && \
     echo 'cd /koai' >> start_app.sh && \
     echo 'export CASS_USERNAME="cassandra"' >> start_app.sh && \
     echo 'export CASS_PASS="cassandra"' >> start_app.sh && \
+    
+    echo 'echo "Starting Cassandra database..."' >> start_app.sh && \
+    echo '/koai/apache-cassandra-5.0.3/bin/cassandra -R &' >> start_app.sh && \
+    echo 'echo "Waiting for Cassandra to initialize (60 seconds)..."' >> start_app.sh && \
+    echo 'sleep 60' >> start_app.sh && \
+    echo 'echo "Configuring Cassandra cluster..."' >> start_app.sh && \
+    echo '/koai/apache-cassandra-5.0.3/bin/cqlsh -u $CASS_USERNAME -p $CASS_PASS -e "UPDATE system.local SET cluster_name = '\''Ufc Cluster'\''   WHERE key='\''local'\'';" || true' >> start_app.sh && \
+    echo 'if [ -f "/koai/database/conf/cassandra.yaml" ]; then' >> start_app.sh && \
+    echo '  echo "Applying custom Cassandra configuration..."' >> start_app.sh && \
+    echo '  cp "/koai/database/conf/cassandra.yaml" "/koai/apache-cassandra-5.0.3/conf/cassandra.yaml"' >> start_app.sh && \
+    echo 'fi' >> start_app.sh && \
+    echo 'echo "Flushing Cassandra data..."' >> start_app.sh && \
+    echo '/koai/apache-cassandra-5.0.3/bin/nodetool flush || true' >> start_app.sh && \
+    
+    
     echo '' >> start_app.sh && \
-    echo '# Check port availability and use Render-assigned PORT' >> start_app.sh && \
-    echo 'if [ -z "$PORT" ]; then' >> start_app.sh && \
-    echo '  export PORT=18080' >> start_app.sh && \
+    echo '# Check port availability' >> start_app.sh && \
+    echo 'export PORT=18080' >> start_app.sh && \
+    #echo 'if [ -z "$PORT" ]; then' >> start_app.sh && \
+    #echo '  export PORT=18080' >> start_app.sh && \
     echo 'fi' >> start_app.sh && \
     echo 'echo "Using PORT: $PORT"' >> start_app.sh && \
-    echo '' >> start_app.sh && \
-    echo '# Skip Cassandra for Render deployment' >> start_app.sh && \
-    echo 'echo "NOTICE: Skipping Cassandra startup for Render.com deployment"' >> start_app.sh && \
-    echo '' >> start_app.sh && \
+    
     echo '# Keep the container running with a simple sleep command' >> start_app.sh && \
     echo 'echo "Container is now running. Keeping container alive..."' >> start_app.sh && \
     echo 'tail -f /var/log/koai/koai-server.log' >> start_app.sh && \
