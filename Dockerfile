@@ -3,7 +3,7 @@ FROM debian:latest
 
 # Install dependencies including wget, tar, and OpenJDK 17
 RUN apt-get update && apt-get install -y \
-    sudo build-essential wget tar netstat \
+    sudo build-essential wget tar net-tools \
     ca-certificates gnupg software-properties-common \
     openjdk-17-jdk \
     logrotate cron
