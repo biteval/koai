@@ -31,7 +31,7 @@ If a fighter cannot be located in the database, the failover search function aut
 
 ## Installation
 
-The most efficient method to test the KoAi application in your computer is by executing the configuration shell script, which installs all dependencies and builds the application:
+The available method to test the KoAi application in your computer is by executing the configuration bash script, which installs all dependencies and builds the application:
 
 ```
 chmod +x configure.sh
