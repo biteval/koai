@@ -68,7 +68,7 @@ RUN echo '#!/bin/bash' > /koai/start_app.sh && \
     echo '' >> /koai/start_app.sh && \
     echo '# Start Cassandra' >> /koai/start_app.sh && \
     echo 'echo "Starting Cassandra database..."' >> /koai/start_app.sh && \
-    echo '/koai/apache-cassandra-5.0.3/bin/cassandra -R &' >> /koai/start_app.sh && \
+    echo 'cd /koai/apache-cassandra-5.0.3/bin && ./cassandra -R &' >> /koai/start_app.sh && \
     echo '' >> /koai/start_app.sh && \
     echo '# Wait for Cassandra to initialize with health check' >> /koai/start_app.sh && \
     echo 'echo "Waiting for Cassandra to initialize..."' >> /koai/start_app.sh && \
@@ -93,7 +93,7 @@ RUN echo '#!/bin/bash' > /koai/start_app.sh && \
     echo '' >> /koai/start_app.sh && \
     echo '# Configure Cassandra cluster' >> /koai/start_app.sh && \
     echo 'echo "Configuring Cassandra cluster..."' >> /koai/start_app.sh && \
-    echo '/koai/apache-cassandra-5.0.3/bin/cqlsh -u $CASS_USERNAME -p $CASS_PASS -e "UPDATE system.local SET cluster_name = '\''Ufc Cluster'\'' WHERE key='\''local'\'';" || echo "Cluster configuration failed but continuing..."' >> /koai/start_app.sh && \
+    echo 'cd /koai/apache-cassandra-5.0.3/bin/ && ./cqlsh -u $CASS_USERNAME -p $CASS_PASS -e "UPDATE system.local SET cluster_name = '\''Ufc Cluster'\'' WHERE key='\''local'\'';" || echo "Cluster configuration failed but continuing..."' >> /koai/start_app.sh && \
     echo '' >> /koai/start_app.sh && \
     echo '# Apply custom Cassandra configuration if available' >> /koai/start_app.sh && \
     echo 'if [ -f "/koai/database/conf/cassandra.yaml" ]; then' >> /koai/start_app.sh && \
@@ -102,18 +102,18 @@ RUN echo '#!/bin/bash' > /koai/start_app.sh && \
     echo '    ' >> /koai/start_app.sh && \
     echo '    # Restart Cassandra after configuration change' >> /koai/start_app.sh && \
     echo '    echo "Restarting Cassandra with new configuration..."' >> /koai/start_app.sh && \
-    echo '    /koai/apache-cassandra-5.0.3/bin/nodetool flush || echo "Flush failed but continuing..."' >> /koai/start_app.sh && \
-    echo '    /koai/apache-cassandra-5.0.3/bin/nodetool drain || echo "Drain failed but continuing..."' >> /koai/start_app.sh && \
+    echo '    cd /koai/apache-cassandra-5.0.3/bin/ && ./nodetool flush || echo "Flush failed but continuing..."' >> /koai/start_app.sh && \
+    echo '    cd /koai/apache-cassandra-5.0.3/bin/ && ./nodetool drain || echo "Drain failed but continuing..."' >> /koai/start_app.sh && \
     echo '    pkill -f CassandraDaemon || echo "No Cassandra process found to kill"' >> /koai/start_app.sh && \
     echo '    sleep 5' >> /koai/start_app.sh && \
-    echo '    /koai/apache-cassandra-5.0.3/bin/cassandra -R &' >> /koai/start_app.sh && \
+    echo '    cd /koai/apache-cassandra-5.0.3/bin   && ./cassandra -R &' >> /koai/start_app.sh && \
     echo '    sleep 30' >> /koai/start_app.sh && \
     echo 'fi' >> /koai/start_app.sh && \
     echo '' >> /koai/start_app.sh && \
     echo '# Start the application with log redirection' >> /koai/start_app.sh && \
     echo 'echo "Starting the koai-server application..."' >> /koai/start_app.sh && \
-    echo 'cd /koai' >> /koai/start_app.sh && \
-    echo './koai >> /var/log/koai/koai-server.log 2>&1 &' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo 'cd .. && cd .. && ./koai >> /var/log/koai/koai-server.log 2>&1 &' >> /koai/start_app.sh && \
     echo '' >> /koai/start_app.sh && \
     echo '# Print confirmation message' >> /koai/start_app.sh && \
     echo 'echo "Container is now running and services have been started."' >> /koai/start_app.sh && \
