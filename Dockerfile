@@ -41,14 +41,9 @@ COPY . .
 # Create download directory for Cassandra
 RUN mkdir -p /koai/tars
 
-# Download and extract Cassandra with reduced memory settings
+# Download and extract Cassandra
 RUN wget -q --show-progress -P /koai/tars https://dlcdn.apache.org/cassandra/5.0.3/apache-cassandra-5.0.3-bin.tar.gz && \
     tar -xzf /koai/tars/apache-cassandra-5.0.3-bin.tar.gz -C /koai
-
-# Configure Cassandra for low memory usage
-RUN echo 'MAX_HEAP_SIZE="256M"' > /koai/apache-cassandra-5.0.3/conf/cassandra-env.sh && \
-    echo 'HEAP_NEWSIZE="64M"' >> /koai/apache-cassandra-5.0.3/conf/cassandra-env.sh && \
-    cat /koai/apache-cassandra-5.0.3/conf/cassandra-env.sh.orig >> /koai/apache-cassandra-5.0.3/conf/cassandra-env.sh
 
 # Configure direct file logging
 RUN mkdir -p /var/log/koai
