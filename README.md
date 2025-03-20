@@ -50,7 +50,7 @@ Cassandra configuration adjustments can be made in `controllers/ufc_db_ctl_conf.
 
 ## Listening Port
 
-If the `PORT` environment variable is not defined, the server will default to listening on port 18080, `https:/0.0.0.0:<PORT>`.
+If the `PORT` environment variable is not defined, the server will default to listening on port 18080, `https://0.0.0.0:<PORT>`.
 
 ### Creating a New Database Example:
 
