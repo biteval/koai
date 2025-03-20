@@ -10,7 +10,14 @@ WORKDIR /koai
 # Copy the entire project into the container
 COPY . .
 
-# Install required dependencies
+# Add deadsnakes PPA for Python 3.11
+RUN apt-get update && apt-get install -y \
+    gnupg \
+    software-properties-common \
+    curl \
+    && curl -fsSL https://packages.sury.org/python/README.txt | bash -
+
+# Install dependencies and Python 3.11
 RUN apt-get update && apt-get install -y \
     cmake \
     wget \
@@ -26,7 +33,10 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     openjdk-17-jdk \
     tar \
-    curl \
+    python3.11 \
+    python3.11-dev \
+    python3.11-venv \
+    python3-pip \
     libncurses5-dev \
     libgdbm-dev \
     libnss3-dev \
@@ -37,19 +47,12 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python 3.11
-RUN mkdir -p /tmp/python_install \
-    && cd /tmp/python_install \
-    && wget https://www.python.org/ftp/python/3.11.11/Python-3.11.11.tgz \
-    && tar -xf Python-3.11.11.tgz \
-    && cd Python-3.11.11 \
-    && ./configure --enable-optimizations \
-    && make -j $(nproc) \
-    && make altinstall \
-    && ln -sf /usr/local/bin/python3.11 /usr/local/bin/python3 \
-    && ln -sf /usr/local/bin/pip3.11 /usr/local/bin/pip3 \
-    && cd / \
-    && rm -rf /tmp/python_install
+# Set Python 3.11 as the default Python version
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 && \
+    update-alternatives --set python3 /usr/bin/python3.11 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 && \
+    update-alternatives --set python /usr/bin/python3.11 && \
+    ln -sf /usr/bin/pip3 /usr/bin/pip
 
 # Download and set up Cassandra
 RUN mkdir -p /koai/tars \
