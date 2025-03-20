@@ -88,7 +88,7 @@ dataProvider.createDatabase("john");
 
 //Start the Crow server after creating the database
 webserver::WebServer koAiServer;
-koAiServer.listen(18080);
+koAiServer.listen();
 ```
 
 ## OS Compatibility
