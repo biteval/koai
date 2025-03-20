@@ -5,7 +5,7 @@
 */
 
 int main(){
-   /*data_provider::DataProviderManager dataProvider;
+   data_provider::DataProviderManager dataProvider;
    database_ctl::UfcDataBaseControllerConf ufcCtlConfigurer;
    database::Credentials cred;
    cred.username = std::getenv(koai::exported::CASS_USERNAME);
@@ -33,7 +33,7 @@ int main(){
    //update the database for athelets with name john only
    //dataProvider.updateDatabase("john");
 
-   */
+   
    
    //start the crow server after creating the databse.
    webserver::WebServer koAiServer;
