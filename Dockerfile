@@ -31,6 +31,7 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
 ENV TERM=xterm-256color
 ENV CASS_USERNAME="cassandra"
 ENV CASS_PASS="cassandra"
+ENV PORT=18080
 
 # Set working directory
 WORKDIR /koai

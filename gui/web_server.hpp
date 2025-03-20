@@ -31,7 +31,7 @@ namespace webserver{
         WebServer operator=(const WebServer&) =delete;
         WebServer(WebServer&&)=delete;
         WebServer& operator=(WebServer&&) =delete;
-        void listen(uint16_t lsnPort);
+        void listen();
         ~WebServer()=default;
     };
 }

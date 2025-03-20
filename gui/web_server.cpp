@@ -103,7 +103,7 @@ auto webserver::WebServer::predictRoute(const crow::request &req){
     return res;
 }
 
-void webserver::WebServer::listen(uint16_t lsnPort){
+void webserver::WebServer::listen(){
 
     CROW_ROUTE(app, "/")
     ([this]()
@@ -150,6 +150,8 @@ void webserver::WebServer::listen(uint16_t lsnPort){
     constexpr auto assetsFolderName ="assets";
     auto certPath = std::filesystem::current_path() / assetsFolderName / "c.pem";
     auto keyPath = std::filesystem::current_path() / assetsFolderName / "key.pem";
+    const char* port_env = std::getenv("PORT");
+    uint16_t lsnPort = port_env ? (uint16_t)std::stoi(port_env) : 18080;
     app.port(lsnPort).ssl_file(certPath.string().c_str(),
                                keyPath.string().c_str())
         .bindaddr("0.0.0.0")

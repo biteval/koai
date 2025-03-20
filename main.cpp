@@ -37,6 +37,6 @@ int main(){
    
    //start the crow server after creating the databse.
    webserver::WebServer koAiServer;
-   koAiServer.listen(18080);
+   koAiServer.listen();
    return 0;
 }
