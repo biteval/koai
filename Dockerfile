@@ -53,77 +53,75 @@ RUN mkdir -p /var/log/koai
 RUN touch /var/log/koai/koai-server.log
 RUN chmod 777 /var/log/koai/koai-server.log
 
-# Create startup script
-RUN cat > /koai/start_app.sh << 'EOF'
-#!/bin/bash
-set -e
-
-# Initial setup
-cd /koai
-export CASS_USERNAME="cassandra"
-export CASS_PASS="cassandra"
-
-# Listen on the correct port
-export PORT=${PORT:-18080}
-echo "Server will listen on PORT: $PORT"
-
-# Start Cassandra
-echo "Starting Cassandra database..."
-/koai/apache-cassandra-5.0.3/bin/cassandra -R &
-
-# Wait for Cassandra to initialize with health check
-echo "Waiting for Cassandra to initialize..."
-ATTEMPTS=0
-MAX_ATTEMPTS=10
-while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
-    ATTEMPTS=$((ATTEMPTS+1))
-    echo "Checking Cassandra status (attempt $ATTEMPTS/$MAX_ATTEMPTS)..."
-    
-    if /koai/apache-cassandra-5.0.3/bin/cqlsh -u $CASS_USERNAME -p $CASS_PASS -e "DESCRIBE KEYSPACES;" &>/dev/null; then
-        echo "Cassandra is ready!"
-        break
-    fi
-    
-    if [ $ATTEMPTS -eq $MAX_ATTEMPTS ]; then
-        echo "WARNING: Cassandra may not be fully initialized, but continuing..."
-    else
-        echo "Cassandra not ready yet. Waiting 15 seconds..."
-        sleep 15
-    fi
-done
-
-# Configure Cassandra cluster
-echo "Configuring Cassandra cluster..."
-/koai/apache-cassandra-5.0.3/bin/cqlsh -u $CASS_USERNAME -p $CASS_PASS -e "UPDATE system.local SET cluster_name = 'Ufc Cluster' WHERE key='local';" || echo "Cluster configuration failed but continuing..."
-
-# Apply custom Cassandra configuration if available
-if [ -f "/koai/database/conf/cassandra.yaml" ]; then
-    echo "Applying custom Cassandra configuration..."
-    cp "/koai/database/conf/cassandra.yaml" "/koai/apache-cassandra-5.0.3/conf/cassandra.yaml"
-    
-    # Restart Cassandra after configuration change
-    echo "Restarting Cassandra with new configuration..."
-    /koai/apache-cassandra-5.0.3/bin/nodetool flush || echo "Flush failed but continuing..."
-    /koai/apache-cassandra-5.0.3/bin/nodetool drain || echo "Drain failed but continuing..."
-    pkill -f CassandraDaemon || echo "No Cassandra process found to kill"
-    sleep 5
-    /koai/apache-cassandra-5.0.3/bin/cassandra -R &
-    sleep 30
-fi
-
-# Start the application
-echo "Starting the koai-server application..."
-cd /koai
-./koai >> /var/log/koai/koai-server.log 2>&1 &
-
-# Print confirmation message
-echo "Container is now running and services have been started."
-echo "Cassandra: 127.0.0.1:9042"
-echo "Application: 0.0.0.0:$PORT"
-
-# Keep the container running
-tail -f /var/log/koai/koai-server.log
-EOF
+# Create startup script with echo commands instead of heredoc
+RUN echo '#!/bin/bash' > /koai/start_app.sh && \
+    echo 'set -e' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Initial setup' >> /koai/start_app.sh && \
+    echo 'cd /koai' >> /koai/start_app.sh && \
+    echo 'export CASS_USERNAME="cassandra"' >> /koai/start_app.sh && \
+    echo 'export CASS_PASS="cassandra"' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Listen on the correct port' >> /koai/start_app.sh && \
+    echo 'export PORT=${PORT:-18080}' >> /koai/start_app.sh && \
+    echo 'echo "Server will listen on PORT: $PORT"' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Start Cassandra' >> /koai/start_app.sh && \
+    echo 'echo "Starting Cassandra database..."' >> /koai/start_app.sh && \
+    echo '/koai/apache-cassandra-5.0.3/bin/cassandra -R &' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Wait for Cassandra to initialize with health check' >> /koai/start_app.sh && \
+    echo 'echo "Waiting for Cassandra to initialize..."' >> /koai/start_app.sh && \
+    echo 'ATTEMPTS=0' >> /koai/start_app.sh && \
+    echo 'MAX_ATTEMPTS=10' >> /koai/start_app.sh && \
+    echo 'while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do' >> /koai/start_app.sh && \
+    echo '    ATTEMPTS=$((ATTEMPTS+1))' >> /koai/start_app.sh && \
+    echo '    echo "Checking Cassandra status (attempt $ATTEMPTS/$MAX_ATTEMPTS)..."' >> /koai/start_app.sh && \
+    echo '    ' >> /koai/start_app.sh && \
+    echo '    if /koai/apache-cassandra-5.0.3/bin/cqlsh -u $CASS_USERNAME -p $CASS_PASS -e "DESCRIBE KEYSPACES;" &>/dev/null; then' >> /koai/start_app.sh && \
+    echo '        echo "Cassandra is ready!"' >> /koai/start_app.sh && \
+    echo '        break' >> /koai/start_app.sh && \
+    echo '    fi' >> /koai/start_app.sh && \
+    echo '    ' >> /koai/start_app.sh && \
+    echo '    if [ $ATTEMPTS -eq $MAX_ATTEMPTS ]; then' >> /koai/start_app.sh && \
+    echo '        echo "WARNING: Cassandra may not be fully initialized, but continuing..."' >> /koai/start_app.sh && \
+    echo '    else' >> /koai/start_app.sh && \
+    echo '        echo "Cassandra not ready yet. Waiting 15 seconds..."' >> /koai/start_app.sh && \
+    echo '        sleep 15' >> /koai/start_app.sh && \
+    echo '    fi' >> /koai/start_app.sh && \
+    echo 'done' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Configure Cassandra cluster' >> /koai/start_app.sh && \
+    echo 'echo "Configuring Cassandra cluster..."' >> /koai/start_app.sh && \
+    echo '/koai/apache-cassandra-5.0.3/bin/cqlsh -u $CASS_USERNAME -p $CASS_PASS -e "UPDATE system.local SET cluster_name = '\''Ufc Cluster'\'' WHERE key='\''local'\'';" || echo "Cluster configuration failed but continuing..."' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Apply custom Cassandra configuration if available' >> /koai/start_app.sh && \
+    echo 'if [ -f "/koai/database/conf/cassandra.yaml" ]; then' >> /koai/start_app.sh && \
+    echo '    echo "Applying custom Cassandra configuration..."' >> /koai/start_app.sh && \
+    echo '    cp "/koai/database/conf/cassandra.yaml" "/koai/apache-cassandra-5.0.3/conf/cassandra.yaml"' >> /koai/start_app.sh && \
+    echo '    ' >> /koai/start_app.sh && \
+    echo '    # Restart Cassandra after configuration change' >> /koai/start_app.sh && \
+    echo '    echo "Restarting Cassandra with new configuration..."' >> /koai/start_app.sh && \
+    echo '    /koai/apache-cassandra-5.0.3/bin/nodetool flush || echo "Flush failed but continuing..."' >> /koai/start_app.sh && \
+    echo '    /koai/apache-cassandra-5.0.3/bin/nodetool drain || echo "Drain failed but continuing..."' >> /koai/start_app.sh && \
+    echo '    pkill -f CassandraDaemon || echo "No Cassandra process found to kill"' >> /koai/start_app.sh && \
+    echo '    sleep 5' >> /koai/start_app.sh && \
+    echo '    /koai/apache-cassandra-5.0.3/bin/cassandra -R &' >> /koai/start_app.sh && \
+    echo '    sleep 30' >> /koai/start_app.sh && \
+    echo 'fi' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Start the application with log redirection' >> /koai/start_app.sh && \
+    echo 'echo "Starting the koai-server application..."' >> /koai/start_app.sh && \
+    echo 'cd /koai' >> /koai/start_app.sh && \
+    echo './koai >> /var/log/koai/koai-server.log 2>&1 &' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Print confirmation message' >> /koai/start_app.sh && \
+    echo 'echo "Container is now running and services have been started."' >> /koai/start_app.sh && \
+    echo 'echo "Cassandra: 127.0.0.1:9042"' >> /koai/start_app.sh && \
+    echo 'echo "Application: 0.0.0.0:$PORT"' >> /koai/start_app.sh && \
+    echo '' >> /koai/start_app.sh && \
+    echo '# Keep the container running' >> /koai/start_app.sh && \
+    echo 'tail -f /var/log/koai/koai-server.log' >> /koai/start_app.sh
 
 # Make startup script executable
 RUN chmod +x /koai/start_app.sh
@@ -135,7 +133,7 @@ RUN mkdir -p /koai/build && \
     make
 
 # Make configure.sh executable
-#RUN chmod +x configure.sh
+RUN chmod +x configure.sh
 
 # Create a non-root user
 RUN useradd -m appuser
