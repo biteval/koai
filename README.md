@@ -31,7 +31,7 @@ If a fighter cannot be located in the database, the failover search function aut
 
 ## Installation
 
-The most efficient method to install the KoAi application is by executing the configuration shell script, which installs all dependencies and builds the application:
+The most efficient method to test the KoAi application in your computer is by executing the configuration shell script, which installs all dependencies and builds the application:
 
 ```
 chmod +x configure.sh
@@ -41,28 +41,16 @@ chmod +x configure.sh
 ./configure.sh
 ```
 
-## Using Docker
-
-To use the Docker container ensure Docker is installed on your system.
-
-### Build the Docker image:
-
-`docker build -t project-name .`
-
-### Run the container:
-
-`docker run -d -p 80:18080  -p 443:18080 project-name`
-
-### Logs:
-
-`sudo docker exec -it <container_name> sudo tail -f /var/log/koai-server.log`
-
 ## Basic Usage
 The default start of KoAi app is by creating a new UFC database to achieve failover data providing, so the default start is recommended. See `main.cpp`
 
 After executing `./configure.sh`, the script defines default Cassandra credentials with SimpleStrategy and a replication factor of 1, then clones the UFC database to your local Cassandra database. You can subsequently modify Cassandra configurations according to your requirements after it has been created.
 
 Cassandra configuration adjustments can be made in `controllers/ufc_db_ctl_conf.hpp` , continue reading to learn how this can be done.
+
+## Listening Port
+
+If the `PORT` environment variable is not defined, the server will default to listening on port 18080, https:/0.0.0.0:<PORT>.
 
 ### Creating a New Database Example:
 
