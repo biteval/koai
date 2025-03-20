@@ -121,4 +121,4 @@ RUN echo '#!/bin/bash' > /koai/startup.sh && \
     chmod +x /koai/startup.sh
 
 # Set the entrypoint
-ENTRYPOINT ["/koai/startup.sh"]
+CMD ["/koai/startup.sh"]
