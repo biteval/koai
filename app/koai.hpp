@@ -2,7 +2,6 @@
 #define __KOAI_APP__
  
 /**
-* @author Mohamed Naamane (mrnmnwork@gmail.com)
 * @brief KoAi class provides functionality to start the app
 */
 

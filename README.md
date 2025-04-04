@@ -6,6 +6,8 @@
 
 KoAi is a predictive platform that determines the result of UFC fights between any two athletes in the organization's roster, using comprehensive data analysis to deliver accurate fight predictions.
 
+## This project serves as an example of legacy code and is intended for educational purposes only.
+
 ## How It Works
 
 KoAi utilizes a flexible failover data provider by combining Cassandra database storage with live web scraping to achieve resilient data provisioning. Initially, we employ a UFC web scraper to clone the UFC database into a local Cassandra database and provide an API for fighter data retrieval. The system searches the Cassandra database first, using a primary key structure optimized for efficient queries by firstname:

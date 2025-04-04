@@ -2,7 +2,6 @@
 #define __KOAI_YEXT_READER__
 
 /**
-* @author Mohamed Naamane (mrnmnwork@gmail.com)
 * @brief json reader to read the yext api used by ufc .
 */
 

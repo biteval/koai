@@ -2,7 +2,6 @@
 #define __KOAI_UFC_ENDPOINT_BUILDER__
 
 /**
-* @author Mohamed Naamane (mrnmnwork@gmail.com)
 * @brief build ufc needed endpoints based on diffrent parameters
 */
 

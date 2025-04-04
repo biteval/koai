@@ -2,7 +2,6 @@
 #define __KOAI_UFC_DATABASE_CONTROLLER_CONF__
 
 /**
-* @author Mohamed Naamane (mrnmnwork@gmail.com)
 * @brief a class to config cassandra database controller with info like Cluster, keyspace , table name, for ufc database
 */
 

@@ -2,7 +2,6 @@
 #define __KOAI_CASS_QUERY_BUILDER__
 
 /**
-* @author Mohamed Naamane (mrnmnwork@gmail.com)
 * @brief generates basic cassandra queries for example insert a record, search for a record , create table queries
 */
 

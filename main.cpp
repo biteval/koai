@@ -1,8 +1,5 @@
 #include "gui/web_server.hpp"
 
-/**
-* @author Mohamed Naamane (mrnmnwork@gmail.com)
-*/
 
 int main(){
    data_provider::DataProviderManager dataProvider;

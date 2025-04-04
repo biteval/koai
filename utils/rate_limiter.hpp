@@ -2,7 +2,6 @@
 #define __KOAI_RATE_LIMITER__
 
 /**
-* @author Mohamed Naamane (mrnmnwork@gmail.com)
 * @brief rate limiter to block multiple fast requests with the same ip address.
 */
 

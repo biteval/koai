@@ -2,7 +2,6 @@
 #define __KOAI_DATABASE_CONTROLLER__
 
 /**
-* @author Mohamed Naamane (mrnmnwork@gmail.com)
 * @brief cassandra database controller, provides basic operations like add record or search for a record.
 */
 
