@@ -6,7 +6,7 @@
 
 KoAi is a predictive platform that determines the result of UFC fights between any two athletes in the organization's roster, using comprehensive data analysis to deliver accurate fight predictions.
 
-## This project is as an example of legacy code, for educational purposes only.
+## This project is as an example of a legacy code, for educational purposes only.
 
 ## How It Works
 
